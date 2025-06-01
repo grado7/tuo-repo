@@ -1,94 +1,98 @@
-import React, { useEffect, useState } from "react";
-import "./App.css"; // opzionale per stili extra
+// App.js
+import React, { useState, useEffect } from "react";
+import "./App.css";
 
 const movies = [
   {
     title: "Inception",
-    image: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg"
+    image: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
+    plot: "Un ladro che ruba segreti attraverso la tecnologia del sogno viene incaricato di un compito impossibile: l'inception.",
+    trailer: "https://www.youtube.com/watch?v=YoHD9XEInc0"
   },
   {
     title: "Interstellar",
-    image: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"
+    image: "https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
+    plot: "Un gruppo di esploratori viaggia attraverso un wormhole nel tentativo di salvare l'umanità.",
+    trailer: "https://www.youtube.com/watch?v=zSWdZVtXT7E"
   },
   {
     title: "The Matrix",
-    image: "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg"
+    image: "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+    plot: "Un hacker scopre la verità sulla sua realtà e il ruolo che gioca nella guerra contro i suoi controllori.",
+    trailer: "https://www.youtube.com/watch?v=vKQi3bBA1y8"
   },
   {
     title: "Fight Club",
-    image: "https://image.tmdb.org/t/p/w500/bptfVGEQuv6vDTIMVCHjJ9Dz8PX.jpg"
+    image: "https://image.tmdb.org/t/p/w500/bptfVGEQuv6vDTIMVCHjJ9Dz8PX.jpg",
+    plot: "Un impiegato depresso forma un club di lotta con uno strano venditore di sapone.",
+    trailer: "https://www.youtube.com/watch?v=SUXWAEX2jlg"
+  },
+  {
+    title: "The Dark Knight",
+    image: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    plot: "Batman affronta il Joker, un genio criminale deciso a portare caos a Gotham City.",
+    trailer: "https://www.youtube.com/watch?v=EXeTwQWrcwY"
   },
   {
     title: "Pulp Fiction",
-    image: "https://image.tmdb.org/t/p/w500/dM2w364MScsjFf8pfMbaWUcWrR.jpg"
+    image: "https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
+    plot: "Le storie di due gangster, un pugile, la moglie di un gangster e due rapinatori si intrecciano a Los Angeles.",
+    trailer: "https://www.youtube.com/watch?v=s7EdQ4FqbhY"
   },
   {
     title: "The Godfather",
-    image: "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg"
-  },
-  {
-    title: "Gladiator",
-    image: "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg"
+    image: "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+    plot: "La saga della famiglia mafiosa Corleone nel periodo postbellico in America.",
+    trailer: "https://www.youtube.com/watch?v=sY1S34973zA"
   }
 ];
 
-function getTodayMovies() {
-  const today = new Date().toISOString().split("T")[0];
-  const seed = parseInt(today.replaceAll("-", ""));
-  const rng = mulberry32(seed);
-  return [...movies].sort(() => rng() - 0.5).slice(0, 2);
-}
-
-function mulberry32(seed) {
-  return function () {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+const getMoviesForToday = () => {
+  const today = new Date().getDate();
+  const shuffled = [...movies].sort(() => 0.5 - Math.random());
+  const seed = today % (movies.length - 2);
+  return shuffled.slice(seed, seed + 3);
+};
 
 function App() {
   const [dailyMovies, setDailyMovies] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
-    setDailyMovies(getTodayMovies());
+    setDailyMovies(getMoviesForToday());
   }, []);
 
   return (
-    <div style={{
-      backgroundColor: "#0f0f0f",
-      color: "#fff",
-      minHeight: "100vh",
-      padding: "30px 20px",
-      fontFamily: "'Poppins', sans-serif"
-    }}>
-      <h1 style={{ textAlign: "center", marginBottom: "40px", fontSize: "2.5rem" }}>
-        🎬 Film consigliati di oggi
-      </h1>
+    <div className="App" style={{ fontFamily: "Arial", padding: "20px" }}>
+      <h1 style={{ textAlign: "center" }}>🎬 Film Consigliati di Oggi</h1>
 
-      <div style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "30px",
-        maxWidth: "600px",
-        margin: "0 auto"
-      }}>
+      <div className="movie-grid">
         {dailyMovies.map((movie, index) => (
-          <div key={index} style={{
-            backgroundColor: "#1e1e1e",
-            borderRadius: "16px",
-            overflow: "hidden",
-            boxShadow: "0 0 10px rgba(255,255,255,0.05)"
-          }}>
-            <img src={movie.image} alt={movie.title} style={{ width: "100%", height: "auto" }} />
-            <div style={{ padding: "20px" }}>
-              <h2 style={{ margin: 0, fontSize: "1.5rem" }}>{movie.title}</h2>
-            </div>
+          <div
+            key={index}
+            className="movie-card"
+            onClick={() => setSelectedMovie(movie)}
+          >
+            <img src={movie.image} alt={movie.title} />
+            <h2>{movie.title}</h2>
           </div>
         ))}
       </div>
+
+      {selectedMovie && (
+        <div className="movie-detail">
+          <h2>{selectedMovie.title}</h2>
+          <p>{selectedMovie.plot}</p>
+          <a
+            href={selectedMovie.trailer}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="trailer-button"
+          >
+            ▶ Guarda il Trailer
+          </a>
+        </div>
+      )}
     </div>
   );
 }
