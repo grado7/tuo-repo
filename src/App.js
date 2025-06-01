@@ -5,7 +5,7 @@ import "./App.css";
 const movies = [
   {
     title: "Inception",
-    image: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
+    image: "https://m.media-amazon.com/images/I/51zUbui+gbL._AC_SY679_.jpg",
     plot: "Un ladro che ruba segreti attraverso la tecnologia del sogno viene incaricato di un compito impossibile: l'inception.",
     trailer: "https://www.youtube.com/watch?v=YoHD9XEInc0"
   },
